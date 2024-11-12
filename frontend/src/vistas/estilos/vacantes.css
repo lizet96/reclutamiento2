@@ -1,0 +1,119 @@
+/* Estructura general */
+.vacantes-container {
+    font-family: Arial, sans-serif;
+}
+  
+/* Estilo del header */
+.vacantes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 10px;
+    color: white;
+    position: relative; /* Asegura que los elementos dentro del header se ubiquen correctamente */
+}
+  
+.menu {
+    position: relative;
+}
+  
+.menu-icon {
+    cursor: pointer;
+    display: block;
+}
+  
+.menu-icon span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 5px 0;
+}
+  
+#menu-toggle {
+    display: none;
+}
+  
+.menu-items {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh; 
+    background-color: #333;
+    padding-top: 0;
+}
+  
+#menu-toggle:checked + label + .menu-items {
+    display: block;
+}
+  
+.menu-items a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+}
+  
+.menu-items a:hover {
+    background-color: #000000;
+}
+  
+/* Imagen central (circular) */
+.header-image img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10%;  /* Hace que la imagen sea circular */
+    display: block;
+    margin: 0 auto;  /* Centra la imagen en el header */
+}
+  
+/* Información del usuario (foto y nombre en la esquina superior derecha) */
+.user-info {
+    display: inline-block;
+    align-items: center;
+    position: sticky;
+    left: 10px;
+    top: 10px;
+}
+  
+.user-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;  /* Hace que la foto del usuario sea circular */
+    margin-right: 10px;
+}
+  
+.user-name {
+    font-size: 16px;
+    color: white; /* Asegura que el texto sea visible sobre el fondo oscuro */
+}
+  
+/* Cuerpo con recuadros de vacantes */
+.vacantes-body {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+}
+  
+.box {
+    width: 200px;
+    height: 150px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+  
+.box:hover {
+    transform: scale(1.05);
+    background-color: #eaeaea;
+}
