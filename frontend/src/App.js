@@ -4,6 +4,7 @@ import SignInForm from "./SignIn";
 import SignUpForm from "./SignUp";
 import { jwtDecode } from "jwt-decode";
 import Perfil from "./vistas/Perfil";
+import Vacantes from "./vistas/vacantes"
 
 export default function App() {
   const [type, setType] = useState("signIn");
@@ -25,25 +26,37 @@ export default function App() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ correo, password }), 
+        body: JSON.stringify({ correo, password }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al iniciar sesión");
+        // Capturar errores específicos
+        if (errorData.error === "Usuario no encontrado") {
+          setError("El usuario no existe.");
+        } else if (errorData.error === "Contraseña incorrecta") {
+          setError("La contraseña ingresada es incorrecta.");
+        } else if (errorData.error === "Por favor verifica tu correo electrónico antes de iniciar sesión.") {
+          setError("Por favor verifica tu correo electrónico antes de iniciar sesión.");
+        } else {
+          setError(errorData.error || "Error al iniciar sesión");
+        }
+        return; // Salir de la función para no continuar en caso de error
       }
-
+  
       const { message, token } = await response.json();
       console.log(message);
       localStorage.setItem("token", token);
-
+  
       setUser(jwtDecode(token));
-      setView("perfil"); // Cambia a la vista de perfil al iniciar sesión
+      setError("");
+      setView("perfil");// Cambia a la vista de perfil al iniciar sesión
     } catch (error) {
       console.error("Error de inicio de sesión:", error);
-      setError(error.message);
+      setError("Error inesperado al iniciar sesión");
     }
   };
+  
 
   const handleRegister = async (name, email, password, fechaNacimiento, telefono) => {
     try {
@@ -53,12 +66,16 @@ export default function App() {
         body: JSON.stringify({ name, email, password, fechaNacimiento, telefono }), 
       });
   
-      if (!response.ok) throw new Error("Error al registrarse");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "el correo ya existe intenta con otro");
+      }
   
-      alert("Registro exitoso. Ahora puedes iniciar sesión.");
+      alert("Registro exitoso, verifica tu correo para poder iniciar sesión.");
       setType("signIn");
     } catch (error) {
       setError(error.message);
+     throw error; 
     }
   };
 
@@ -66,11 +83,13 @@ export default function App() {
 
   return (
     <div className="App">
+      
       {/* Hacer clic en el título "Reclutamiento Inteligente" cambia la vista a perfil */}
-      <h2 onClick={() => setView("perfil")} style={{ cursor: "pointer" }}>
+      {view !== "vacantes" && (
+      <h2 onClick={() => setView("vacantes")} style={{ cursor: "pointer" }}>
         Reclutamiento Inteligente
       </h2>
-
+        )}
       {view === "auth" ? (
         <div className={containerClass} id="container">
           <SignUpForm onRegister={handleRegister} />
@@ -104,9 +123,14 @@ export default function App() {
             </div>
           </div>
         </div>
-      ) : (
-        <Perfil user={user} /> 
-      )}
+      ) : view === "perfil" ? (
+        <Perfil user={user} />
+      ) : view === "vacantes" ? (
+        <Vacantes />
+      ) : null}
+
+          
+
     </div>
   );
 }
