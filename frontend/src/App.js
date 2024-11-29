@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import "./Styles.css";
-import SignInForm from "./SignIn";
-import SignUpForm from "./SignUp";
 import { jwtDecode } from "jwt-decode";
 import Perfil from "./vistas/Perfil";
-import Vacantes from "./vistas/vacantes"
+import Vacantes from "./vistas/vacantes";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AgregarVacante from "./vistas/agregarVacante";
+import Formularios from "./vistas/Formularios";
+import Cuestionario from "./vistas/Cuestionario";
+import Resultados from './vistas/Resultados';
+import Auth from "./componentes/Auth"; // Importar el componente de autenticación
 
 export default function App() {
   const [type, setType] = useState("signIn");
@@ -31,7 +35,6 @@ export default function App() {
   
       if (!response.ok) {
         const errorData = await response.json();
-        // Capturar errores específicos
         if (errorData.error === "Usuario no encontrado") {
           setError("El usuario no existe.");
         } else if (errorData.error === "Contraseña incorrecta") {
@@ -41,7 +44,7 @@ export default function App() {
         } else {
           setError(errorData.error || "Error al iniciar sesión");
         }
-        return; // Salir de la función para no continuar en caso de error
+        return;
       }
   
       const { message, token } = await response.json();
@@ -50,14 +53,13 @@ export default function App() {
   
       setUser(jwtDecode(token));
       setError("");
-      setView("perfil");// Cambia a la vista de perfil al iniciar sesión
+      setView("vacantes");
     } catch (error) {
       console.error("Error de inicio de sesión:", error);
       setError("Error inesperado al iniciar sesión");
     }
   };
   
-
   const handleRegister = async (name, email, password, fechaNacimiento, telefono) => {
     try {
       const response = await fetch("http://localhost:5000/api/auth/register", {
@@ -68,69 +70,49 @@ export default function App() {
   
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "el correo ya existe intenta con otro");
+        throw new Error(errorData.error || "El correo ya existe, intenta con otro");
       }
   
       alert("Registro exitoso, verifica tu correo para poder iniciar sesión.");
       setType("signIn");
     } catch (error) {
       setError(error.message);
-     throw error; 
+      throw error; 
     }
   };
 
-  const containerClass = "container " + (type === "signUp" ? "right-panel-active" : "");
-
   return (
-    <div className="App">
-      
-      {/* Hacer clic en el título "Reclutamiento Inteligente" cambia la vista a perfil */}
-      {view !== "vacantes" && (
-      <h2 onClick={() => setView("vacantes")} style={{ cursor: "pointer" }}>
-        Reclutamiento Inteligente
-      </h2>
+    <BrowserRouter>
+      <div className="App">
+        {view === "auth" && (
+          <h2 onClick={() => setView("vacantes")} style={{ cursor: "pointer" }}>
+            Reclutamiento Inteligente
+          </h2>
         )}
-      {view === "auth" ? (
-        <div className={containerClass} id="container">
-          <SignUpForm onRegister={handleRegister} />
-          <SignInForm onLogin={handleLogin} error={error} /> 
-          <div className="overlay-container">
-            <div className="overlay">
-              <div className="overlay-panel overlay-left">
-                <h1>Bienvenido!</h1>
-                <p>
-                  Para mantenerse conectado con nosotros, inicie sesión con su información personal
-                </p>
-                <button
-                  className="ghost"
-                  id="signIn"
-                  onClick={() => handleOnClick("signIn")}
-                >
-                  Iniciar sesión
-                </button>
-              </div>
-              <div className="overlay-panel overlay-right">
-                <h1>¿Aún no tienes cuenta?</h1>
-                <p>Ingresa tus datos personales y comienza un viaje con nosotros</p>
-                <button
-                  className="ghost"
-                  id="signUp"
-                  onClick={() => handleOnClick("signUp")}
-                >
-                  Registrarse
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : view === "perfil" ? (
-        <Perfil user={user} />
-      ) : view === "vacantes" ? (
-        <Vacantes />
-      ) : null}
 
-          
+        {/* Mostrar el componente de autenticación solo si la vista es 'auth' */}
+        {view === "auth" && (
+          <Auth
+            handleLogin={handleLogin}
+            handleRegister={handleRegister}
+            error={error}
+            type={type}
+            handleOnClick={handleOnClick}
+          />
+        )}
 
-    </div>
+        {/* Rutas de las vistas adicionales */}
+        {view === "perfil" && <Perfil user={user} />}
+        {view === "vacantes" && <Vacantes setView={setView} user={user} />}
+        {view === "agregarVacante" && <AgregarVacante setView={setView} user={user} />}
+
+        {/* Rutas de formularios y cuestionarios */}
+        <Routes>
+          <Route path="/formularios/:vacante_id" element={<Formularios />} />
+          <Route path="/cuestionario/:id_formulario" element={<Cuestionario />} />
+        <Route path="/resultados" element={<Resultados />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }

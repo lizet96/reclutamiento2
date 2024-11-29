@@ -5,8 +5,9 @@ import People from '../assets/people.png'
 import Camara from '../assets/camara.png'
 import Folder from '../assets/folder.png'
 import { jwtDecode } from 'jwt-decode';
-
+import { useNavigate } from 'react-router-dom';
 const Perfil = () => {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null); // Para la imagen temporal
   const [profileImage, setProfileImage] = useState(People); // Para la imagen guardada del usuario
@@ -17,7 +18,7 @@ const Perfil = () => {
   const [contrasenaActual, setContrasenaActual] = useState('');
 const [nuevaContrasena, setNuevaContrasena] = useState('');
 const [confirmacionContrasena, setConfirmacionContrasena] = useState('');
-
+const [currentDate, setCurrentDate] = useState("");
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -165,8 +166,17 @@ const [confirmacionContrasena, setConfirmacionContrasena] = useState('');
       }
     }
   };
+  const handleGoBack = () => {
+    navigate('/vacantes'); // Redirigir a la vista de vacantes
+  };
   return (
     <div className={styles.frameParent}>
+       <div className={styles.header}>
+        <span className={styles.date}>{currentDate}</span>
+        <button onClick={handleGoBack} className={styles.goBackButton}>
+          Volver a Vacantes
+        </button>
+      </div>
       <div className={styles.frameGroup}>
         <div className={styles.groupParent}>
           <img className={styles.groupIcon} alt="" src={profileImage} />
@@ -187,7 +197,6 @@ const [confirmacionContrasena, setConfirmacionContrasena] = useState('');
         <div className={styles.elegirArchivo}>Guardar foto</div>
       </button>
           <div className={styles.lizetJazminOlveraGonzlezParent}>
-            <div className={styles.lizetJazminOlvera}>Lizet Jazmin Olvera González</div>
             <div className={styles.postulante}>Postulante</div>
           </div>
         </div>

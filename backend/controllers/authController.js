@@ -19,7 +19,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
 // Función para enviar el correo de verificación
 const sendVerificationEmail = async (email, verificationToken) => {
   const url = `http://localhost:5000/api/auth/verify-email?token=${verificationToken}`;
