@@ -2,16 +2,10 @@
 
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql');
 
+// Importa la conexión de la base de datos desde db.js
+const db = require('../db'); // Aquí importamos la conexión a la base de datos
 // Configuración de la conexión a la base de datos
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'reclutamiento', // Cambia por tu base de datos
-});
-
 // Ruta para guardar las respuestas
 router.post('/guardar_respuestas', (req, res) => {
   const { id_formulario, respuestas } = req.body;

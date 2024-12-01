@@ -73,7 +73,7 @@ const registerUser = async (req, res) => {
         [fechaNacimiento, telefono, userId]
       );
 
-      const verificationToken = jwt.sign({ id_usuario: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const verificationToken = jwt.sign({ id_usuario: userId , role: user.rol }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       // Actualizar el campo 'us_codigo_verificacion' con el token de verificación
       await connection.execute('UPDATE usuario SET us_codigo_verificacion = ? WHERE id_usuario = ?', [verificationToken, userId]);

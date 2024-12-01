@@ -1,5 +1,3 @@
-// server.js
-
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -7,13 +5,11 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const protectedRoutes = require('./routes/protectedRoutes');
 const vacanteRoutes = require('./routes/vacanteRoutes');
-const vacanteHabilidadRoutes = require('./routes/vacanteHabilidadRoutes'); // Nueva ruta
+const vacanteHabilidadRoutes = require('./routes/vacanteHabilidadRoutes');
 const profileRoutes = require('./routes/profileRoutes');
-const formularios = require("./routes/formularios"); // Importa las rutas de formularios
-const preguntas = require("./routes/preguntas"); // Importa las rutas de preguntas
-const respuestasRoutes = require('./routes/respuestas'); // Importa las rutas
-
-// Importa las rutas que has definido
+const formularios = require("./routes/formularios");
+const preguntas = require("./routes/preguntas");
+const respuestasRoutes = require('./routes/respuestas');
 const resultadosRoutes = require('./routes/resultadosRoutes');
 
 const path = require('path');
@@ -21,33 +17,28 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const mysql = require('mysql');
-
-// Configuración de la conexión a la base de datos
-const db = mysql.createConnection({
-  host: 'localhost', // Cambia por el host de tu base de datos
-  user: 'root', // Cambia por el usuario de tu base de datos
-  password: '', // Cambia por la contraseña de tu base de datos
-  database: 'reclutamiento', // Cambia por el nombre de tu base de datos
-});
+// Importa la conexión de la base de datos desde db.js
+const db = require('./db'); // Aquí importamos la conexión a la base de datos
 
 // Middleware
 app.use(
   cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
+    origin: process.env.CLIENT_URL || '*', // Permite conexiones desde el frontend desplegado
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Agrega más métodos si son necesarios
+    allowedHeaders: ['Content-Type', 'Authorization'], // Asegúrate de incluir `Authorization` si usas JWT
   })
 );
+
 app.use(bodyParser.json());
 
-// Conectar a la base de datos
-db.connect((err) => {
+// Conectar a la base de datos (esto ya está configurado en db.js, no es necesario volver a hacerlo)
+db.getConnection((err, connection) => {
   if (err) {
     console.error('Error al conectar a la base de datos:', err);
     process.exit(1); // Termina la aplicación si no puede conectarse
   }
   console.log('Conexión exitosa a la base de datos');
+  connection.release();
 });
 
 // Rutas
@@ -85,7 +76,6 @@ app.get('/api/vacantes', (req, res) => {
   });
 });
 
-
 app.get('/api/habilidades', (req, res) => {
   const query = 'SELECT id_habilidad, hab_nombre FROM habilidad';
   db.query(query, (err, result) => {
@@ -101,19 +91,18 @@ app.get('/api/habilidades', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api', protectedRoutes);
 app.use('/api/vacante', vacanteRoutes);
-app.use('/api/vacantehabilidad', vacanteHabilidadRoutes); // Montar la nueva ruta
+app.use('/api/vacantehabilidad', vacanteHabilidadRoutes);
 app.use('/api/profile', profileRoutes);
 app.use("/api", formularios); // Agrega las rutas de formularios
 app.use("/api", preguntas); // Agrega las rutas de formularios
-app.use('/api', respuestasRoutes);  // Registra las rutas de respuestas
-// Usa las rutas definidas en el archivo de rutas
+app.use('/api', respuestasRoutes);
 app.use(resultadosRoutes);
-
 
 // Rutas estáticas
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Inicia el servidor
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT} or ${process.env.RENDER_EXTERNAL_URL}`);
+
 });

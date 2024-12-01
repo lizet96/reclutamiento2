@@ -50,10 +50,16 @@ export default function App() {
       const { message, token } = await response.json();
       console.log(message);
       localStorage.setItem("token", token);
-  
-      setUser(jwtDecode(token));
-      setError("");
-      setView("vacantes");
+   // Decodificar el token y extraer los datos del usuario
+   const decodedUser = jwtDecode(token); // Aquí extraes el payload del token
+   console.log(decodedUser); // Muestra en consola los datos decodificados
+   setUser(decodedUser); 
+     // Si el rol es admin, redirigimos a agregar vacante
+    if (decodedUser.role === 'admin') {
+      setView("agregarVacante"); // Redirige a "agregarVacante" si es admin
+    } else {
+      setView("vacantes"); // Redirige a "vacantes" si es cliente
+    }
     } catch (error) {
       console.error("Error de inicio de sesión:", error);
       setError("Error inesperado al iniciar sesión");
@@ -102,13 +108,12 @@ export default function App() {
         )}
 
         {/* Rutas de las vistas adicionales */}
-        {view === "perfil" && <Perfil user={user} />}
+        {view === "perfil" && <Perfil setView={setView} user={user} />}
         {view === "vacantes" && <Vacantes setView={setView} user={user} />}
         {view === "agregarVacante" && <AgregarVacante setView={setView} user={user} />}
-
         {/* Rutas de formularios y cuestionarios */}
         <Routes>
-          <Route path="/formularios/:vacante_id" element={<Formularios />} />
+        <Route path="/formularios/:vacante_id" element={<Formularios user={user}setView={setView} />} />
           <Route path="/cuestionario/:id_formulario" element={<Cuestionario />} />
         <Route path="/resultados" element={<Resultados />} />
         </Routes>

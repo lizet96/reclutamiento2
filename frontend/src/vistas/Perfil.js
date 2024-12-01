@@ -6,7 +6,10 @@ import Camara from '../assets/camara.png'
 import Folder from '../assets/folder.png'
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-const Perfil = () => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+
+const Perfil = ({ setView, user }) => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null); // Para la imagen temporal
@@ -51,7 +54,6 @@ const [currentDate, setCurrentDate] = useState("");
   }, []);
    // Dependencia vacía, solo se ejecuta una vez al cargar el componente
   
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -60,6 +62,10 @@ const [currentDate, setCurrentDate] = useState("");
       setProfileImage(fileURL); // Muestra la imagen en el espacio de People
     }
   };
+  const handleGoBack = () => {
+    navigate('/vacantes'); // Navegar a la pantalla de vacantes
+  };
+
 
   const handleEditProfile = async () => {
     const token = localStorage.getItem('token');
@@ -166,9 +172,7 @@ const [currentDate, setCurrentDate] = useState("");
       }
     }
   };
-  const handleGoBack = () => {
-    navigate('/vacantes'); // Redirigir a la vista de vacantes
-  };
+  const handleRedirectToHome = () => setView("vacantes");
   return (
     <div className={styles.frameParent}>
        <div className={styles.header}>
@@ -177,6 +181,10 @@ const [currentDate, setCurrentDate] = useState("");
           Volver a Vacantes
         </button>
       </div>
+      <button className="nav-link" onClick={handleRedirectToHome}>
+              <i className="fas fa-home"></i>
+              <span>Home</span>
+            </button>
       <div className={styles.frameGroup}>
         <div className={styles.groupParent}>
           <img className={styles.groupIcon} alt="" src={profileImage} />

@@ -114,7 +114,7 @@ export default function InicioSesion() {
                   }}
                 >
                   Iniciar Sesión
-                </MDBBtn>
+                </MDBBtn>zz
               </form>
 
               <p className="mb-5 pb-lg-2" style={{ color: '#00796b' }}>
