@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./estilos/Formularios.css";
 
-const Formularios = () => {
-  const [formularios, setFormularios] = useState([]); 
-  const [selectedFormulario, setSelectedFormulario] = useState(null); 
-  const [showModal, setShowModal] = useState(false); 
-  const { vacante_id } = useParams(); 
-  const navigate = useNavigate(); 
+const Formularios = ({ setView, user }) => {
+  const [formularios, setFormularios] = useState([]);
+  const [selectedFormulario, setSelectedFormulario] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const { vacante_id } = useParams();
+  const navigate = useNavigate();
 
   // Hacer la solicitud a la API para obtener los formularios
   useEffect(() => {
@@ -23,61 +23,64 @@ const Formularios = () => {
   }, [vacante_id]);
 
   // Función para manejar clic en los botones de navegación
-  const handleRedirectToPerfil = () => navigate("/perfil");
-  const handleRedirectToHome = () => navigate("/vacantes");
-  const handleRedirectToAgregarVacante = () => navigate("/agregar-vacante");
-  const handleRedirectToResultados = () => navigate("/resultados");
+  // Función para redirigir a otras vistas
+  
+
+  const handleRedirectToPerfil = () => setView("perfil");
+  const handleRedirectToHome = () => setView("vacantes");
+  const handleRedirectToAgregarVacante = () => setView("agregarVacante");
+const handleRedirectToResultados = () => setView("resultados");
 
   // Mostrar la ventana modal con el formulario seleccionado
   const handleFormularioClick = (formulario) => {
     setSelectedFormulario(formulario);
-    setShowModal(true); 
+    setShowModal(true);
   };
 
   // Acción para el botón "Empezar"
   const handleEmpezar = () => {
     if (selectedFormulario) {
-      navigate(`/cuestionario/${selectedFormulario.id_formulario}`); 
+      navigate(`/cuestionario/${selectedFormulario.id_formulario}`);
     }
-    setShowModal(false); 
+    setShowModal(false);
   };
 
   // Acción para el botón "Cancelar"
   const handleCancelar = () => {
     setSelectedFormulario(null);
-    setShowModal(false); 
+    setShowModal(false);
   };
 
   return (
-    <div className="vacante-container">
-      <header className="vacante-header">
+    <div className="vacantes-container">
+      <header className="vacantes-header">
         <div>
           <nav className="vacante-nav">
-            <button className="nav-link" onClick={handleRedirectToPerfil}>
-              <i className="fas fa-user"></i>
-              <span>Perfil</span>
-            </button>
             <button className="nav-link" onClick={handleRedirectToHome}>
               <i className="fas fa-home"></i>
               <span>Home</span>
             </button>
+            <button className="nav-link" onClick={handleRedirectToPerfil}>
+              <i className="fas fa-user"></i>
+              <span>Perfil</span>
+            </button>
             <button className="nav-link" onClick={handleRedirectToAgregarVacante}>
-              <i className="fas fa-plus-circle"></i>
-              <span>Agregar Vacante</span>
-            </button>
-            <button className="nav-link" onClick={handleRedirectToResultados}>
-              <i className="fas fa-chart-bar"></i>
-              <span>Resultados</span>
-            </button>
+            <i className="fas fa-plus-circle"></i>
+         <span>Agregar Vacante</span>
+        </button>
+        <button className="nav-link" onClick={handleRedirectToResultados}>
+         <i className="fas fa-chart-bar"></i>
+          <span>Resultados</span>
+        </button>
           </nav>
         </div>
-        <div className="header-content">
-          <span className="admin-text"></span>
+        <div className="user-info">
           <img
             src="https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-humano_157943-15752.jpg?w=360"
             alt="User"
-            className="perfil-image"
+            className="user-photo"
           />
+          <span className="user-name">{user?.nombre}</span>
         </div>
       </header>
 
@@ -118,11 +121,7 @@ const Formularios = () => {
         </div>
       )}
 
-      {formularios.length > 0 && (
-        <button className="btn btn-start" onClick={handleEmpezar}>
-          Empezar formulario
-        </button>
-      )}
+      
     </div>
   );
 };

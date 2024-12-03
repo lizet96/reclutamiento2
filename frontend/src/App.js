@@ -111,11 +111,12 @@ export default function App() {
         {view === "perfil" && <Perfil setView={setView} user={user} />}
         {view === "vacantes" && <Vacantes setView={setView} user={user} />}
         {view === "agregarVacante" && <AgregarVacante setView={setView} user={user} />}
+        {view === "resultados" && <Resultados setView={setView} user={user} />}
+        
         {/* Rutas de formularios y cuestionarios */}
         <Routes>
         <Route path="/formularios/:vacante_id" element={<Formularios user={user}setView={setView} />} />
           <Route path="/cuestionario/:id_formulario" element={<Cuestionario />} />
-        <Route path="/resultados" element={<Resultados />} />
         </Routes>
       </div>
     </BrowserRouter>

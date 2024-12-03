@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const Perfil = ({ setView, user }) => {
-  const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null); // Para la imagen temporal
   const [profileImage, setProfileImage] = useState(People); // Para la imagen guardada del usuario
@@ -62,10 +61,8 @@ const [currentDate, setCurrentDate] = useState("");
       setProfileImage(fileURL); // Muestra la imagen en el espacio de People
     }
   };
-  const handleGoBack = () => {
-    navigate('/vacantes'); // Navegar a la pantalla de vacantes
-  };
 
+  
 
   const handleEditProfile = async () => {
     const token = localStorage.getItem('token');
@@ -172,19 +169,16 @@ const [currentDate, setCurrentDate] = useState("");
       }
     }
   };
+
   const handleRedirectToHome = () => setView("vacantes");
+  
   return (
     <div className={styles.frameParent}>
-       <div className={styles.header}>
-        <span className={styles.date}>{currentDate}</span>
-        <button onClick={handleGoBack} className={styles.goBackButton}>
-          Volver a Vacantes
-        </button>
-      </div>
       <button className="nav-link" onClick={handleRedirectToHome}>
               <i className="fas fa-home"></i>
               <span>Home</span>
             </button>
+
       <div className={styles.frameGroup}>
         <div className={styles.groupParent}>
           <img className={styles.groupIcon} alt="" src={profileImage} />

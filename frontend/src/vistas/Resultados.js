@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Radar } from 'react-chartjs-2'; // Importamos el componente de Radar
+import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, RadialLinearScale, Title, Tooltip, Legend, PointElement, LineElement, Filler } from 'chart.js';
 
-// Registramos todos los componentes necesarios para gráficos de radar en Chart.js
 ChartJS.register(CategoryScale, RadialLinearScale, Title, Tooltip, Legend, PointElement, LineElement, Filler);
 
-const Resultados = () => {
+const Resultados = ({ setView }) => {
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Para manejar errores
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Consulta la API para obtener los resultados
     fetch('http://localhost:5000/api/resultados')
       .then((response) => {
         if (!response.ok) {
@@ -20,34 +18,33 @@ const Resultados = () => {
         return response.json();
       })
       .then((data) => {
-        setResultados(data); // Asignar los resultados obtenidos
+        setResultados(data);
         setLoading(false);
       })
       .catch((error) => {
         console.error('Error al obtener los resultados:', error);
-        setError(error.message); // Guardar el mensaje de error
+        setError(error.message);
         setLoading(false);
       });
   }, []);
+
+  const handleRedirectToHome = () => setView("vacantes");
 
   if (loading) {
     return <div>Cargando resultados...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>; // Mostrar mensaje de error si ocurre
+    return <div>Error: {error}</div>;
   }
 
-  // Agrupar los resultados por vacante
   const vacantes = resultados.reduce((acc, resultado) => {
     const { vacante_nombre, formulario_nombre, habilidad_nombre, promedio_respuestas_correctas } = resultado;
 
-    // Si no existe la vacante en el acumulador, la creamos
     if (!acc[vacante_nombre]) {
       acc[vacante_nombre] = [];
     }
 
-    // Añadimos el resultado a la vacante correspondiente
     acc[vacante_nombre].push({
       formulario_nombre,
       habilidad_nombre,
@@ -57,7 +54,6 @@ const Resultados = () => {
     return acc;
   }, {});
 
-  // Configuración para la gráfica de radar
   const obtenerDatosGrafica = (vacante) => {
     const formularios = vacantes[vacante];
     const habilidades = formularios.map((formulario) => formulario.habilidad_nombre);
@@ -77,13 +73,12 @@ const Resultados = () => {
     };
   };
 
-  // Datos inventados para la gráfica de radar
   const datosInventados = {
     labels: ['Habilidad 1', 'Habilidad 2', 'Habilidad 3', 'Habilidad 4', 'Habilidad 5'],
     datasets: [
       {
         label: 'Promedio Inventado (%)',
-        data: [80, 75, 90, 85, 70], // Datos inventados
+        data: [80, 75, 90, 85, 70],
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
@@ -99,6 +94,7 @@ const Resultados = () => {
         backgroundColor: '#f9f9f9',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        overflow: 'auto',
       }}
     >
       <h2
@@ -111,6 +107,14 @@ const Resultados = () => {
       >
         Resultados del Formulario
       </h2>
+
+      {/* Botón para ir a la página de Vacantes */}
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <button onClick={handleRedirectToHome}>
+          <i className="fas fa-home"></i>
+          <span>Home</span>
+        </button>
+      </div>
 
       {Object.keys(vacantes).length > 0 ? (
         Object.keys(vacantes).map((vacante, index) => {
@@ -127,54 +131,65 @@ const Resultados = () => {
                 Vacante: {vacante}
               </h3>
 
-              {/* Mostrar la gráfica de radar */}
-              <div
-                className="grafica-container"
-                style={{
-                  marginBottom: '30px',
-                  height: '400px', // Tamaño del gráfico
-                  width: '100%',
-                }}
-              >
-                <Radar
-                  data={obtenerDatosGrafica(vacante)}
-                  options={{
-                    responsive: true,
-                    plugins: {
-                      title: {
-                        display: true,
-                        text: `Promedio de Respuestas para Vacante: ${vacante}`,
-                      },
-                    },
-                    scales: {
-                      r: {
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                          stepSize: 10,
+              {/* Mostrar gráficos y resultados en una fila */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
+                {/* Gráfica de radar */}
+                <div
+                  className="grafica-container"
+                  style={{
+                    flex: 1,
+                    height: '40vh',
+                    width: '100%',
+                  }}
+                >
+                  <Radar
+                    data={obtenerDatosGrafica(vacante)}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        title: {
+                          display: true,
+                          text: `Promedio de Respuestas para Vacante: ${vacante}`,
                         },
                       },
-                    },
-                  }}
-                />
-              </div>
+                      scales: {
+                        r: {
+                          min: 0,
+                          max: 100,
+                          ticks: {
+                            stepSize: 10,
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </div>
 
-              {/* Mostrar los resultados en tabla */}
-              {formularios.map((formulario, idx) => {
-                return (
-                  <div key={idx} className="formulario-resultados" style={{ marginBottom: '20px' }}>
-                    <h4
-                      style={{
-                        fontSize: '18px',
-                        color: '#666',
-                      }}
-                    >
-                      Habilidad: {formulario.habilidad_nombre}
-                    </h4>
-                    <p>Promedio de respuestas correctas: {formulario.promedio_respuestas_correctas}</p>
-                  </div>
-                );
-              })}
+                {/* Tabla con resultados */}
+                <div
+                  className="tabla-resultados"
+                  style={{
+                    flex: 1,
+                    overflowX: 'auto',
+                  }}
+                >
+                  {formularios.map((formulario, idx) => {
+                    return (
+                      <div key={idx} className="formulario-resultados" style={{ marginBottom: '20px' }}>
+                        <h4
+                          style={{
+                            fontSize: '18px',
+                            color: '#666',
+                          }}
+                        >
+                          Habilidad: {formulario.habilidad_nombre}
+                        </h4>
+                        <p>Promedio de respuestas correctas: {formulario.promedio_respuestas_correctas}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           );
         })
@@ -187,7 +202,7 @@ const Resultados = () => {
         className="grafica-inventada"
         style={{
           marginTop: '40px',
-          height: '400px',
+          height: '40vh',
           width: '100%',
         }}
       >
