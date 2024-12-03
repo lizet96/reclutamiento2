@@ -46,8 +46,7 @@ const Cuestionario = () => {
       id_pregunta: preguntaId,
       id_respuesta: respuestasSeleccionadas[preguntaId],
     }));
-
-    // Enviar las respuestas al backend
+  
     fetch("http://localhost:5000/api/guardar_respuestas", {
       method: "POST",
       headers: {
@@ -61,9 +60,8 @@ const Cuestionario = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Respuestas guardadas:", data);
-        
         // Redirigir a la vista de resultados
-        navigate("/Resultados");
+        navigate("/resultados");  // Asegúrate de que el nombre de la ruta sea correcto
       })
       .catch((error) => {
         console.error("Error al guardar las respuestas:", error);
