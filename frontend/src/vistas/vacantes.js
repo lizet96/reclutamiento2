@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../vistas/estilos/vacantes.css";
 import NavigationBar from "../componentes/NavigationBar";
+import Header from "../componentes/Header";
 const Vacantes = ({ user }) => {
   const [vacantes, setVacantes] = useState([]);
 
@@ -19,6 +20,7 @@ const Vacantes = ({ user }) => {
 
   return (
     <div className="vacantes-container">
+      <Header/>
       <NavigationBar user={user} />
       <h1 className="section-title">Vacantes Disponibles</h1>
       <div className="vacantes-grid">
