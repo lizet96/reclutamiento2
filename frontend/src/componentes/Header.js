@@ -25,6 +25,7 @@ const styles = {
     backgroundColor: '#000', // Fondo negro
     position: 'fixed',
     top: 0,
+    
     left: 0,
     zIndex: 1000, // Asegura que el header esté siempre arriba
     padding: '10px 0',

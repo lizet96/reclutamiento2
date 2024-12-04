@@ -6,8 +6,9 @@ import Camara from '../assets/camara.png';
 import Folder from '../assets/folder.png';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import Header from "../componentes/Header";
+import NavigationBar from "../componentes/NavigationBar";
+import ApiUrl from "../config/ApiUrl";
 
 const Perfil = ({ user }) => {
   const navigate = useNavigate(); // Usar useNavigate para redirección
@@ -32,7 +33,7 @@ const Perfil = ({ user }) => {
 
       // Llama a la API para obtener la información del perfil
       axios
-        .get('https://rrhbackend.onrender.com/api/profile/get-profile', {
+        .get(`${ApiUrl}profile/get-profile`, {
           headers: { 'Authorization': `Bearer ${token}` },
         })
         .then(response => {
@@ -70,7 +71,7 @@ const Perfil = ({ user }) => {
 
     try {
       const response = await axios.put(
-        'https://rrhbackend.onrender.com/api/profile/update-info', 
+       `${ApiUrl}profile/update-info`, 
         { id_usuario: userId, us_nombre: nombre, us_apellido: apellido, us_correo: correo, telefono: telefono },
         {
           headers: { 'Authorization': `Bearer ${token}` },
@@ -105,7 +106,7 @@ const Perfil = ({ user }) => {
 
     try {
       const response = await axios.put(
-        'https://rrhbackend.onrender.com/api/profile/update-profile',
+        `${ApiUrl}profile/update-profile`,
         formData,
         {
           headers: {
@@ -135,7 +136,7 @@ const Perfil = ({ user }) => {
 
     try {
       const response = await axios.put(
-        'https://rrhbackend.onrender.com/api/profile/update-password', 
+        `${ApiUrl}profile/update-password`, 
         { 
           id_usuario: userId, 
           contrasena_actual: contrasenaActual, 
@@ -170,10 +171,12 @@ const Perfil = ({ user }) => {
   
   return (
     <div className={styles.frameParent}>
-      <button className="nav-link" onClick={handleRedirectToHome}>
-        <i className="fas fa-home"></i>
-        <span>Home</span>
-      </button>
+          <div >
+
+        <Header/>
+        <NavigationBar user={user} />
+        </div>
+
 
       <div className={styles.frameGroup}>
         <div className={styles.groupParent}>

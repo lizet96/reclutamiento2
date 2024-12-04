@@ -168,9 +168,7 @@
     align-self: stretch;
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 125px;
+    gap: 40px;
 }
 .editarContrasea {
     align-self: stretch;

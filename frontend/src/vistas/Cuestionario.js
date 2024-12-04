@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./estilos/Cuestionario.css";
 import { useNavigate } from "react-router-dom";
-
-
-const Cuestionario = () => {
+import ApiUrl from "../config/ApiUrl";
+import Header from "../componentes/Header";
+import NavigationBar from "../componentes/NavigationBar";
+const Cuestionario= ({ user }) => {
   const { id_formulario } = useParams(); // Obtener el id_formulario desde la URL
   const [preguntas, setPreguntas] = useState([]); // Estado para almacenar preguntas
   const [loading, setLoading] = useState(true); // Estado para mostrar un indicador de carga
@@ -20,7 +21,7 @@ const Cuestionario = () => {
       return;
     }
 
-    fetch(`https://rrhbackend.onrender.com/api/preguntas?id_formulario=${id_formulario}`)
+    fetch(`${ApiUrl}preguntas?id_formulario=${id_formulario}`)
       .then((response) => response.json())
       .then((data) => {
         setPreguntas(data);
@@ -48,7 +49,7 @@ const Cuestionario = () => {
     }));
 
     // Enviar las respuestas al backend
-    fetch("https://rrhbackend.onrender.com/api/guardar_respuestas", {
+    fetch(`${ApiUrl}guardar_respuestas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,38 +73,9 @@ const Cuestionario = () => {
 
   return (
     <div className="vacante-container">
-      <header className="vacante-header">
-        {/* Navegación fija */}
-        <div>
-          <nav className="vacante-nav">
-            <a href="/perfil">
-              <i className="fas fa-user"></i>
-              <span>Perfil</span>
-            </a>
-            <a href="/vacantes">
-              <i className="fas fa-home"></i>
-              <span>Home</span>
-            </a>
-            <a href="/agregarVacante">
-              <i className="fas fa-plus-circle"></i>
-              <span>Agregar Vacante</span>
-            </a>
-            <a href="/Resultados">
-              <i className="fas fa-chart-bar"></i>
-              <span>Resultados</span>
-            </a>
-          </nav>
-        </div>
-        <div className="header-content">
-          <span className="admin-text"></span>
-          <img
-            src="https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-humano_157943-15752.jpg?w=360"
-            alt="User"
-            className="perfil-image"
-          />
-        </div>
-      </header>
-
+      
+      <Header />
+      <NavigationBar user={user} />
       <div className="vacante-body">
         <div className="vacante-content">
           <h2 className="section-title">
@@ -154,10 +126,11 @@ const Cuestionario = () => {
             <p>No hay preguntas disponibles para este formulario.</p>
           )}
           {/* Botón para enviar las respuestas */}
-          <button onClick={handleSubmit} className="enviar-respuestas-boton">
+       
+        </div>
+        <button onClick={handleSubmit} className="enviar-respuestas-boton">
             Enviar respuestas
           </button>
-        </div>
       </div>
     </div>
   );

@@ -1,12 +1,12 @@
+// App.js
+
 import React, { useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import Navigation from "./Navigation"; // Importa tu componente de rutas centralizado
 import Auth from "./componentes/Auth"; // Componente de autenticación
 import "./Styles.css";
 import { jwtDecode } from "jwt-decode";
-import "font-awesome/css/font-awesome.min.css";
-
-
+import ApiUrl from "./config/ApiUrl";
 export default function App() {
   const [type, setType] = useState("signIn");
   const [user, setUser] = useState(null); 
@@ -21,7 +21,7 @@ export default function App() {
 
   const handleLogin = async (correo, password) => {
     try {
-      const response = await fetch("https://rrhbackend.onrender.com/api/auth/login", {
+      const response = await fetch(`${ApiUrl}auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ correo, password }),
@@ -49,7 +49,7 @@ export default function App() {
 
   const handleRegister = async (name, email, password, fechaNacimiento, telefono) => {
     try {
-      const response = await fetch("https://rrhbackend.onrender.com/api/auth/register", {
+      const response = await fetch(`${ApiUrl}auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, fechaNacimiento, telefono }),
@@ -81,8 +81,8 @@ export default function App() {
             handleOnClick={handleOnClick}
           />
         ) : (
-          // Mostrar la navegación si el usuario ha iniciado sesión
-          <Navigation />
+          // Mostrar la navegación si el usuario ha iniciado sesión, pasando 'user' como prop
+          <Navigation user={user} />
         )}
       </div>
     </BrowserRouter>

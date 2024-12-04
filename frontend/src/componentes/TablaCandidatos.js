@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-
+import ApiUrl from '../config/ApiUrl';
 const TablaCandidatos = () => {
   const [vacantes, setVacantes] = useState([]); // Para guardar las vacantes de la API
   const [candidatos, setCandidatos] = useState([]); // Para guardar los candidatos filtrados
@@ -10,7 +10,7 @@ const TablaCandidatos = () => {
     // Traemos las vacantes de la API
     const fetchVacantes = async () => {
       try {
-        const response = await fetch('https://rrhbackend.onrender.com/api/VacanteEmpresa?id_empresa=1'); // Asegúrate de pasar el id de la empresa correcto
+        const response = await fetch(`${ApiUrl}VacanteEmpresa?id_empresa=1`); // Asegúrate de pasar el id de la empresa correcto
         const data = await response.json();
         setVacantes(data);
       } catch (error) {
@@ -25,7 +25,7 @@ const TablaCandidatos = () => {
     const fetchCandidatos = async () => {
       if (selectedVacante) {
         try {
-          const response = await fetch(`https://rrhbackend.onrender.com/api/Postulantes?id_vacante=${selectedVacante}`);
+          const response = await fetch(`${ApiUrl}Postulantes?id_vacante=${selectedVacante}`);
           const data = await response.json();
           setCandidatos(data);
         } catch (error) {

@@ -1,10 +1,11 @@
-// agregarVacante.js
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./estilos/agregarVacante.css";
+import Header from "../componentes/Header";
+import NavigationBar from "../componentes/NavigationBar";
+import ApiUrl from "../config/ApiUrl";
 
-const AgregarVacante = ({ setView, user }) => {
+const AgregarVacante = ({ user }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -23,17 +24,17 @@ const AgregarVacante = ({ setView, user }) => {
   const [habilidades, setHabilidades] = useState([]);
 
   useEffect(() => {
-    fetch("https://rrhbackend.onrender.com/api/empresas")
+    fetch(`${ApiUrl}empresas`)
       .then((response) => response.json())
       .then((data) => setEmpresas(data))
       .catch((error) => console.error("Error al obtener las empresas:", error));
 
-    fetch("https://rrhbackend.onrender.com/api/categorias")
+    fetch(`${ApiUrl}categorias`)
       .then((response) => response.json())
       .then((data) => setCategorias(data))
       .catch((error) => console.error("Error al obtener las categorías:", error));
 
-    fetch("https://rrhbackend.onrender.com/api/habilidades")
+    fetch(`${ApiUrl}habilidades`)
       .then((response) => response.json())
       .then((data) => setHabilidades(data))
       .catch((error) => console.error("Error al obtener las habilidades:", error));
@@ -80,7 +81,7 @@ const AgregarVacante = ({ setView, user }) => {
         id_categoria: formData.id_categoria,
       });
       
-      const vacanteResponse = await fetch("https://rrhbackend.onrender.com/api/vacante", {
+      const vacanteResponse = await fetch(`${ApiUrl}vacante`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +118,7 @@ const AgregarVacante = ({ setView, user }) => {
       console.log('Asociando habilidades con ID de vacante:', id_vacante, 'Habilidades:', formData.habilidades);
   
       const requests = formData.habilidades.map((id_habilidad) =>
-        fetch("https://rrhbackend.onrender.com/api/vacantehabilidad", {
+        fetch(`${ApiUrl}vacantehabilidad`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id_vacante, id_habilidad }),
@@ -154,42 +155,10 @@ const AgregarVacante = ({ setView, user }) => {
     });
   };
 
-  const handleRedirectToPerfil = () => setView("perfil");
-  const handleRedirectToHome = () => setView("vacantes");
-
   return (
     <div className="vacantes-container">
-      <header className="vacantes-header">
-        <div>
-          <nav className="vacante-nav">
-            <button className="nav-link" onClick={handleRedirectToHome}>
-              <i className="fas fa-home"></i>
-              <span>Home</span>
-            </button>
-            <button className="nav-link" onClick={handleRedirectToPerfil}>
-              <i className="fas fa-user"></i>
-              <span>Perfil</span>
-            </button>
-            <button className="nav-link">
-              <i className="fas fa-plus-circle"></i>
-              <span>Agregar Vacante</span>
-            </button>
-            <button className="nav-link">
-              <i className="fas fa-chart-bar"></i>
-              <span>Resultados</span>
-            </button>
-          </nav>
-        </div>
-        <div className="user-info">
-          <img
-            src="https://img.freepik.com/vector-premium/icono-perfil-usuario-estilo-plano-ilustracion-vector-avatar-miembro-sobre-fondo-aislado-concepto-negocio-signo-permiso-humano_157943-15752.jpg?w=360"
-            alt="User"
-            className="user-photo"
-          />
-          <span className="user-name">{user?.nombre}</span>
-        </div>
-      </header>
-
+      <Header/>
+      <NavigationBar user={user} />
       <div className="vacante-body">
         <div className="vacante-content">
           <h2 className="section-title">Agregar Vacante</h2>
@@ -260,7 +229,7 @@ const AgregarVacante = ({ setView, user }) => {
                     <option value="" disabled>Seleccione una empresa</option>
                     {empresas.map((empresa) => (
                       <option key={empresa.id_empresa} value={empresa.id_empresa}>
-                        {empresa.emp_nombre}
+                        {empresa.nombre_empresa}
                       </option>
                     ))}
                   </select>
@@ -274,16 +243,16 @@ const AgregarVacante = ({ setView, user }) => {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">Selecciona una categoría</option>
+                    <option value="" disabled>Seleccione una categoría</option>
                     {categorias.map((categoria) => (
                       <option key={categoria.id_categoria} value={categoria.id_categoria}>
-                        {categoria.cat_nombre}
+                        {categoria.nombre_categoria}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div className="input-group">
-                  <label>Habilidades Requeridas</label>
+                <label>Habilidades Requeridas</label>
                   <div className="habilidades-checkboxes">
                     {habilidades.map((habilidad) => (
                       <div key={habilidad.id_habilidad} className="checkbox-item">
@@ -298,17 +267,16 @@ const AgregarVacante = ({ setView, user }) => {
                         <label htmlFor={`habilidad-${habilidad.id_habilidad}`}>
                           {habilidad.hab_nombre}
                         </label>
-                      </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="submit-button">
-              <button type="submit" className="btn-submit">Guardar Vacante</button>
             </div>
+            <button type="submit" className="submit-button">Guardar Vacante</button>
           </form>
         </div>
+        
       </div>
     </div>
   );

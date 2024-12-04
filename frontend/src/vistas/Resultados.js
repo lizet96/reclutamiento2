@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, RadialLinearScale, Title, Tooltip, Legend, PointElement, LineElement, Filler } from 'chart.js';
+import { useNavigate } from 'react-router-dom';  // Importar useNavigate
+import Header from "../componentes/Header";
+import NavigationBar from "../componentes/NavigationBar";
+import ApiUrl from "../config/ApiUrl";
 
 ChartJS.register(CategoryScale, RadialLinearScale, Title, Tooltip, Legend, PointElement, LineElement, Filler);
 
-const Resultados = ({ setView }) => {
+const Resultados = ({ user }) => {
   const [resultados, setResultados] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();  // Inicializar useNavigate
 
   useEffect(() => {
-    fetch('https://rrhbackend.onrender.com/api/resultados')
+    fetch(`${ApiUrl}resultados`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.status}`);
@@ -28,7 +33,7 @@ const Resultados = ({ setView }) => {
       });
   }, []);
 
-  const handleRedirectToHome = () => setView("vacantes");
+
 
   if (loading) {
     return <div>Cargando resultados...</div>;
@@ -97,6 +102,8 @@ const Resultados = ({ setView }) => {
         overflow: 'auto',
       }}
     >
+      <Header />
+      <NavigationBar user={user} />
       <h2
         style={{
           textAlign: 'center',
@@ -108,14 +115,7 @@ const Resultados = ({ setView }) => {
         Resultados del Formulario
       </h2>
 
-      {/* Botón para ir a la página de Vacantes */}
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <button onClick={handleRedirectToHome}>
-          <i className="fas fa-home"></i>
-          <span>Home</span>
-        </button>
-      </div>
-
+  
       {Object.keys(vacantes).length > 0 ? (
         Object.keys(vacantes).map((vacante, index) => {
           const formularios = vacantes[vacante];

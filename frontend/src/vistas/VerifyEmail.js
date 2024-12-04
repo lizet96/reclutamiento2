@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-
+import ApiUrl from "../config/ApiUrl";
 function VerifyEmail() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ function VerifyEmail() {
 
     // Actualizar la URL en la solicitud a la nueva ruta de verificación en el backend
     axios
-      .get(`https://rrhbackend.onrender.com/api/auth/verify-email?token=${token}`)
+      .get(`${ApiUrl}auth/verify-email?token=${token}`)
       .then((response) => {
         setMessage(response.data.message);
         setLoading(false);
