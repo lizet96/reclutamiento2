@@ -1,6 +1,6 @@
 // Lógica para interactuar con la API en el backend
 export const saveRespuestas = (id_formulario, respuestas) => {
-    return fetch("http://localhost:5000/api/guardar_respuestas", {
+    return fetch("https://rrhbackend.onrender.com/api/guardar_respuestas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

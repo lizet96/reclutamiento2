@@ -16,7 +16,7 @@ const Formularios = ({ setView, user }) => {
       return;
     }
 
-    fetch(`http://localhost:5000/api/formularios?vacante_id=${vacante_id}`)
+    fetch(`https://rrhbackend.onrender.com/api/formularios?vacante_id=${vacante_id}`)
       .then((response) => response.json())
       .then((data) => setFormularios(data))
       .catch((error) => console.error("Error al obtener formularios:", error));

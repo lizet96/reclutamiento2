@@ -23,17 +23,17 @@ const AgregarVacante = ({ setView, user }) => {
   const [habilidades, setHabilidades] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/empresas")
+    fetch("https://rrhbackend.onrender.com/api/empresas")
       .then((response) => response.json())
       .then((data) => setEmpresas(data))
       .catch((error) => console.error("Error al obtener las empresas:", error));
 
-    fetch("http://localhost:5000/api/categorias")
+    fetch("https://rrhbackend.onrender.com/api/categorias")
       .then((response) => response.json())
       .then((data) => setCategorias(data))
       .catch((error) => console.error("Error al obtener las categorías:", error));
 
-    fetch("http://localhost:5000/api/habilidades")
+    fetch("https://rrhbackend.onrender.com/api/habilidades")
       .then((response) => response.json())
       .then((data) => setHabilidades(data))
       .catch((error) => console.error("Error al obtener las habilidades:", error));
@@ -80,7 +80,7 @@ const AgregarVacante = ({ setView, user }) => {
         id_categoria: formData.id_categoria,
       });
       
-      const vacanteResponse = await fetch("http://localhost:5000/api/vacante", {
+      const vacanteResponse = await fetch("https://rrhbackend.onrender.com/api/vacante", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +117,7 @@ const AgregarVacante = ({ setView, user }) => {
       console.log('Asociando habilidades con ID de vacante:', id_vacante, 'Habilidades:', formData.habilidades);
   
       const requests = formData.habilidades.map((id_habilidad) =>
-        fetch("http://localhost:5000/api/vacantehabilidad", {
+        fetch("https://rrhbackend.onrender.com/api/vacantehabilidad", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id_vacante, id_habilidad }),

@@ -1,0 +1,27 @@
+/* Estilos generales para el contenedor */
+.Postulantes {
+  margin: 20px auto;
+  max-width: 90%; /* La tabla y contenido estarán bien centrados */
+  padding: 20px;
+  background-color: #f9f9f9; /* Fondo claro */
+  border: 1px solid #ddd; /* Borde suave */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para un efecto flotante */
+}
+
+/* Estilos para el título */
+.section-title {
+  font-size: 24px; /* Tamaño grande */
+  font-weight: bold;
+  text-align: center;
+  color: #8D288E; /* Color principal de tu paleta */
+  margin-bottom: 20px;
+  border-bottom: 2px solid #8D288E; /* Línea decorativa */
+  padding-bottom: 10px;
+}
+
+/* Estilos adicionales (opcional) */
+.Postulantes:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombra más intensa al pasar el cursor */
+  transition: all 0.3s ease;
+}

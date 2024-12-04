@@ -1,44 +1,44 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from '../vistas/estilos/Frame.module.css';
-import People from '../assets/people.png'
-import Camara from '../assets/camara.png'
-import Folder from '../assets/folder.png'
+import People from '../assets/people.png';
+import Camara from '../assets/camara.png';
+import Folder from '../assets/folder.png';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
-const Perfil = ({ setView, user }) => {
+const Perfil = ({ user }) => {
+  const navigate = useNavigate(); // Usar useNavigate para redirección
   const [userId, setUserId] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null); // Para la imagen temporal
-  const [profileImage, setProfileImage] = useState(People); // Para la imagen guardada del usuario
+  const [selectedImage, setSelectedImage] = useState(null); 
+  const [profileImage, setProfileImage] = useState(People);
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
   const [telefono, setTelefono] = useState("");
   const [contrasenaActual, setContrasenaActual] = useState('');
-const [nuevaContrasena, setNuevaContrasena] = useState('');
-const [confirmacionContrasena, setConfirmacionContrasena] = useState('');
-const [currentDate, setCurrentDate] = useState("");
+  const [nuevaContrasena, setNuevaContrasena] = useState('');
+  const [confirmacionContrasena, setConfirmacionContrasena] = useState('');
+  const [currentDate, setCurrentDate] = useState("");
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       const decodedToken = jwtDecode(token);
       const extractedUserId = decodedToken.id_usuario;
       setUserId(extractedUserId);
-  
+
       // Llama a la API para obtener la información del perfil
       axios
-        .get('http://localhost:5000/api/profile/get-profile', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+        .get('https://rrhbackend.onrender.com/api/profile/get-profile', {
+          headers: { 'Authorization': `Bearer ${token}` },
         })
         .then(response => {
           console.log("Respuesta de la API:", response.data);
           if (response.data) {
-            const { us_nombre, us_apellido, us_correo, us_foto,telefono } = response.data;
+            const { us_nombre, us_apellido, us_correo, us_foto, telefono } = response.data;
             setNombre(us_nombre);
             setApellido(us_apellido);
             setCorreo(us_correo);
@@ -51,18 +51,15 @@ const [currentDate, setCurrentDate] = useState("");
       console.error("No se encontró el token. El usuario debe iniciar sesión.");
     }
   }, []);
-   // Dependencia vacía, solo se ejecuta una vez al cargar el componente
-  
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedImage(file); // Guarda la imagen en el estado
+      setSelectedImage(file);
       const fileURL = URL.createObjectURL(file);
-      setProfileImage(fileURL); // Muestra la imagen en el espacio de People
+      setProfileImage(fileURL);
     }
   };
-
-  
 
   const handleEditProfile = async () => {
     const token = localStorage.getItem('token');
@@ -73,7 +70,7 @@ const [currentDate, setCurrentDate] = useState("");
 
     try {
       const response = await axios.put(
-        'http://localhost:5000/api/profile/update-info', 
+        'https://rrhbackend.onrender.com/api/profile/update-info', 
         { id_usuario: userId, us_nombre: nombre, us_apellido: apellido, us_correo: correo, telefono: telefono },
         {
           headers: { 'Authorization': `Bearer ${token}` },
@@ -92,23 +89,23 @@ const [currentDate, setCurrentDate] = useState("");
       alert("No tienes permisos para acceder");
       return;
     }
-  
+
     if (!selectedImage) {
       alert("Por favor selecciona una imagen primero");
       return;
     }
-  
+
     console.log("Enviando imagen con los siguientes datos:");
     console.log("Token:", token);
     console.log("Imagen seleccionada:", selectedImage);
-  
+
     const formData = new FormData();
     formData.append('us_foto', selectedImage);  
     formData.append('id_usuario', userId); 
-  
+
     try {
       const response = await axios.put(
-        'http://localhost:5000/api/profile/update-profile',
+        'https://rrhbackend.onrender.com/api/profile/update-profile',
         formData,
         {
           headers: {
@@ -130,15 +127,15 @@ const [currentDate, setCurrentDate] = useState("");
       alert("No tienes permisos para acceder");
       return;
     }
-  
+
     if (nuevaContrasena !== confirmacionContrasena) {
       alert("Las contraseñas no coinciden");
       return;
     }
-  
+
     try {
       const response = await axios.put(
-        'http://localhost:5000/api/profile/update-password', // URL para actualizar la contraseña
+        'https://rrhbackend.onrender.com/api/profile/update-password', 
         { 
           id_usuario: userId, 
           contrasena_actual: contrasenaActual, 
@@ -154,7 +151,6 @@ const [currentDate, setCurrentDate] = useState("");
       setNuevaContrasena("");
       setConfirmacionContrasena("");
     } catch (error) {
-      // Mostramos alertas detalladas según el mensaje de error que devuelve el servidor
       if (error.response && error.response.data && error.response.data.error) {
         const errorMessage = error.response.data.error;
         if (errorMessage === 'La contraseña actual es incorrecta') {
@@ -170,14 +166,14 @@ const [currentDate, setCurrentDate] = useState("");
     }
   };
 
-  const handleRedirectToHome = () => setView("vacantes");
+  const handleRedirectToHome = () => navigate("/vacantes"); // Usar navigate para la redirección
   
   return (
     <div className={styles.frameParent}>
       <button className="nav-link" onClick={handleRedirectToHome}>
-              <i className="fas fa-home"></i>
-              <span>Home</span>
-            </button>
+        <i className="fas fa-home"></i>
+        <span>Home</span>
+      </button>
 
       <div className={styles.frameGroup}>
         <div className={styles.groupParent}>

@@ -20,7 +20,7 @@ const Cuestionario = () => {
       return;
     }
 
-    fetch(`http://localhost:5000/api/preguntas?id_formulario=${id_formulario}`)
+    fetch(`https://rrhbackend.onrender.com/api/preguntas?id_formulario=${id_formulario}`)
       .then((response) => response.json())
       .then((data) => {
         setPreguntas(data);
@@ -48,7 +48,7 @@ const Cuestionario = () => {
     }));
 
     // Enviar las respuestas al backend
-    fetch("http://localhost:5000/api/guardar_respuestas", {
+    fetch("https://rrhbackend.onrender.com/api/guardar_respuestas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

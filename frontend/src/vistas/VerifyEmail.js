@@ -19,7 +19,7 @@ function VerifyEmail() {
 
     // Actualizar la URL en la solicitud a la nueva ruta de verificación en el backend
     axios
-      .get(`http://localhost:5000/api/auth/verify-email?token=${token}`)
+      .get(`https://rrhbackend.onrender.com/api/auth/verify-email?token=${token}`)
       .then((response) => {
         setMessage(response.data.message);
         setLoading(false);

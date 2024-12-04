@@ -10,7 +10,7 @@ const Resultados = ({ setView }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/resultados')
+    fetch('https://rrhbackend.onrender.com/api/resultados')
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.status}`);
