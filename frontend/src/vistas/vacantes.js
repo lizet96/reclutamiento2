@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import "../vistas/estilos/vacantes.css";
 import NavigationBar from "../componentes/NavigationBar";
 import Header from "../componentes/Header";
+import ApiUrl from "../config/ApiUrl";
+
 const Vacantes = ({ user }) => {
   const [vacantes, setVacantes] = useState([]);
 
   useEffect(() => {
     const fetchVacantes = async () => {
       try {
-        const response = await fetch("https://rrhbackend.onrender.com/api/vacantes");
+        const response = await fetch(`${ApiUrl}vacantes`);
         const data = await response.json();
         setVacantes(data);
       } catch (error) {
